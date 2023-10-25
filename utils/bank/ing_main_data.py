@@ -8,7 +8,7 @@ import glob
 import pandas as pd
 
 # Get the path of the folder containing the CSV file
-folder_path = r'C:\Users\dudzi\Desktop\Portfel\raw_data\mbank'
+folder_path = r'C:\Users\dudzi\Desktop\Portfel\raw_data\ing'
 
 def get_main_data():
     '''Function to get main data from csv file'''
@@ -22,6 +22,8 @@ def get_main_data():
 
         # Loop through each CSV file and load it using pandas
         for csv_file in csv_files:
+            # Define the expected columns
+            expected_columns = [0, 1]
             df = pd.read_csv(csv_file, 
                              encoding='ISO-8859-1', 
                              error_bad_lines=False, 
@@ -42,36 +44,26 @@ def get_main_data():
             df = df[0].str.split(';', expand=True)
 
             # Select only needed columns
-            df = df[[0, 1, 4, 5]]
+            df = df[[0, 2, 8, 9, 15, 16]]
 
-            # Create a new column that takes the last 3 characters of the original column
-            df['value_currency'] = df[4].str[-3:]
-
-            # Create a new column that takes the last 3 characters of the original column
-            df['saldo_currency'] = df[5].str[-3:]
-
-            # Remove the last 3 characters from the column
-            df['value'] = df[4].str[:-3]
-
-            # Remove the last 3 characters from the column
-            df['saldo'] = df[5].str[:-3]
+            # Replace empty strings with NaN values
+            df.replace("", None, inplace=True)
 
             # Remove rows with missing values
             df.dropna(axis=0, inplace=True)
 
             # Rename columns
             df = df.rename(columns={0:  'date',
-                                    1:  'title'
+                                    2:  'title',
+                                    8:  'value',
+                                    9:  'value_currency',
+                                    15: 'saldo',
+                                    16: 'saldo_currency'
                                     })
-            
-            # Remove unnecessary columns
-            df.drop([4, 5], axis=1, inplace=True)
 
             # Replace ',' with '.' and change type of columns
-            df['value'] = df['value'].str.replace(',', '.')
-            df['value'] = df['value'].str.replace(' ', '').astype(float)
-            df['saldo'] = df['saldo'].str.replace(',', '.')
-            df['saldo'] = df['saldo'].str.replace(' ', '').astype(float)
+            df['value'] = df['value'].str.replace(',', '.').astype(float)
+            df['saldo'] = df['saldo'].str.replace(',', '.').astype(float)
             df['date'] = df['date'].astype('datetime64[ns]')
 
             # Append the data to the final dataframe
