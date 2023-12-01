@@ -1,25 +1,27 @@
 '''
 Developer: Tomasz Dudzik
-Desc: module to get mbank main data from csv extract file stored on local drive
+
+Desc: module to get bank main data from csv extract file stored on local drive
 Note: need to change to some sharepoint site
 '''
 import os
 import glob
+import yaml
 import pandas as pd
 
+with open('config.yaml', 'r') as file:
+    config = yaml.safe_load(file)
+
 # Get the path of the folder containing the CSV file
-folder_path = r'C:\Users\dudzi\Desktop\Portfel\raw_data'
+folder_path = config['global_variables']['bank_path']
 # Get the folder name from the file path
 folder_name = os.path.basename(folder_path)
 
-def get_main_data():
+def get_bank_main_data():
     """
-    get_main_data function
-
     This function processes bank statement data from various sources. 
     It reads CSV files from a specified folder, renames and formats the columns, and appends the data to a final DataFrame. 
     The function handles different formats for different banks, including 'santander', 'ing', and 'mbank'. 
-    The final DataFrame is saved to an Excel file.
 
     Parameters:
     folder_path (str): The path to the folder containing the CSV files. 
@@ -131,40 +133,12 @@ def get_main_data():
 
             # Drop duplicates
             df_all.drop_duplicates(inplace=True)
-
+            print('Bank data loaded')
     else:
+        df_all = pd.DataFrame()
         print("Folder does not exist")
 
-    # Group by 'date', sum up 'value' and keep only the first 'saldo' value for each date
-    df_all = df_all.groupby(['date', 'source', 'currency']).agg({'value': 'sum', 'saldo': 'first'}).reset_index()
-
-    # Set the 'date' column as the index
-    df_all.set_index(['date'], inplace=True)
-
-    # Create transaction dataframe
-    selected_columns = ['source', 'currency', 'value']
-    df_transaction = df_all[selected_columns]
-
-    # Create balance dataframe
-    selected_columns = ['source', 'currency', 'saldo']
-    df_balance = df_all[selected_columns]
-
-    # Fill forward the missing values
-    df_balance= df_balance.groupby(['source','currency']).resample('D').ffill()
-
-    # List of columns to drop, reset the index and set the 'date' column as the index
-    cols_to_drop = ['source','currency']
-    df_balance = df_balance.drop(columns=cols_to_drop)
-    df_balance.reset_index(inplace=True)
-    df_balance.set_index('date', inplace=True)
-
-    # Create a dictionary with the two dataframes
-    result = {'transaction': df_transaction, 'balance': df_balance}
-
-    # Save the data to an Excel file
-    result.to_excel(r'C:\Users\dudzi\Desktop\Portfel\raw_data\bank_statments.xlsx')
-
-    return result
+    return df_all
 
 if __name__ == '__main__':
     get_main_data()
