@@ -1,0 +1,4 @@
+# This YAML file contains global variables used in the finance portfolio query.
+# The `bank_path` variable specifies the path to the bank data file.
+global_variables: 
+  bank_path: C:/Users/dudzi/Desktop/Portfel/raw_data
