@@ -141,4 +141,4 @@ def get_bank_main_data():
     return df_all
 
 if __name__ == '__main__':
-    get_main_data()
+    get_bank_main_data()

@@ -3,7 +3,7 @@ Developer: Tomasz Dudzik
 
 Desc: Module to get ETL bank main data
 '''
-from ..query.bank_main_data import get_bank_main_data
+from query.bank_main_data import get_bank_main_data
 
 def bank_etl():
     """
@@ -12,6 +12,7 @@ def bank_etl():
     Returns:
     dict: A dictionary containing two dataframes - 'transaction' and 'balance'.
     """
+
     # Get the data
     df = get_bank_main_data()
 
