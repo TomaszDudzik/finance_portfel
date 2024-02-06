@@ -9,11 +9,12 @@ import glob
 import yaml
 import pandas as pd
 
-with open('config.yaml', 'r') as file:
+with open('finance_portfel/config.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
-# Get the path of the folder containing the CSV file
-folder_path = config['global_variables']['bank_path']
+# Get the path of the folder containing the CSV file and where the output need to be saved
+folder_path = config['path']['bank_data_input_path']
+file = config['path']['bank_data_ouput_file']
 # Get the folder name from the file path
 folder_name = os.path.basename(folder_path)
 
@@ -34,11 +35,20 @@ def get_bank_main_data():
     Raises:
     Prints "Folder does not exist" if the specified folder does not exist.
     """
-    # Check if the folder exists
-    if os.path.exists(folder_path):
-        # Create an empty dataframe to store the data
+    # Define the file path
+    file_path = r'C:\Users\dudzi\Desktop\Portfel\data_source\bank_main_data.xlsx'
+
+    # Check if the file exists
+    if os.path.exists(file):
+        # If the file exists, read it into a DataFrame
+        df_all = pd.read_excel(file)
+    else:
+        # If the file doesn't exist, print a message
+        print(f"The file {file} does not exist.")
         df_all = pd.DataFrame()
 
+    # Check if the folder exists
+    if os.path.exists(folder_path):
         # Get a list of all the CSV files in the folder
         csv_files = glob.glob(os.path.join(folder_path, '**/*.csv'))
 
@@ -56,7 +66,7 @@ def get_bank_main_data():
             # Configure the columns to be selected based on the folder name
             if 'ing' in folder_name:
                 first_four = df[0].apply(lambda x: str(x)[:4])
-                selected_columns = [0, 2, 8, 9, 15, 16]
+                selected_columns = [0, 2, 8, 9, 14]
             elif 'mbank' in folder_name:
                 first_four = df[0].apply(lambda x: str(x)[:4])
                 selected_columns = [0, 1, 4, 5]
@@ -86,7 +96,7 @@ def get_bank_main_data():
                                         2:  'title',
                                         8:  'value',
                                         9:  'currency',
-                                        15: 'saldo'
+                                        14: 'saldo'
                                         })
                 df['source'] = folder_name
                 df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
@@ -131,12 +141,15 @@ def get_bank_main_data():
             # Append the data to the final dataframe
             df_all = df_all.append(df)
 
-            # Drop duplicates
-            df_all.drop_duplicates(inplace=True)
-            print('Bank data loaded')
+            # Drop duplicates based on 'date', 'title', and 'value'
+            df_all.drop_duplicates(subset=['date', 'title', 'value'], inplace=True)
+            print('Bank data has been loaded successfully')         
+
     else:
         df_all = pd.DataFrame()
         print("Folder does not exist")
+
+    df_all.to_excel(r'C:\Users\dudzi\Desktop\Portfel\data_source\bank_main_data.xlsx', index=False)
 
     return df_all
 

@@ -3,14 +3,16 @@ Developer: Tomasz Dudzik
 
 Desc: Module to get ETL bank main data
 '''
-from query.bank_main_data import get_bank_main_data
+import sys
+sys.path.append('finance_portfel/')
+from data_source.bank_main_data import get_bank_main_data
 
 def bank_etl():
     """
     Extracts, transforms, and loads bank data.
 
     Returns:
-    dict: A dictionary containing two dataframes - 'transaction' and 'balance'.
+    dict: A dictionary containing two dataframes - 'transaction' and 'saldo'.
     """
 
     # Get the data
@@ -26,21 +28,21 @@ def bank_etl():
     selected_columns = ['source', 'currency', 'value']
     df_transaction = df[selected_columns]
 
-    # Create balance dataframe
+    # Create saldo dataframe
     selected_columns = ['source', 'currency', 'saldo']
-    df_balance = df[selected_columns]
+    df_saldo = df[selected_columns]
 
     # Fill forward the missing values
-    df_balance= df_balance.groupby(['source','currency']).resample('D').ffill()
+    df_saldo= df_saldo.groupby(['source','currency']).resample('D').ffill()
 
     # List of columns to drop, reset the index and set the 'date' column as the index
     cols_to_drop = ['source','currency']
-    df_balance = df_balance.drop(columns=cols_to_drop)
-    df_balance.reset_index(inplace=True)
-    df_balance.set_index('date', inplace=True)
+    df_saldo = df_saldo.drop(columns=cols_to_drop)
+    df_saldo.reset_index(inplace=True)
+    df_saldo.set_index('date', inplace=True)
 
     # Create a dictionary with the two dataframes
-    result = {'transaction': df_transaction, 'balance': df_balance}
+    result = {'transaction': df_transaction, 'saldo': df_saldo}
 
     return result
 
