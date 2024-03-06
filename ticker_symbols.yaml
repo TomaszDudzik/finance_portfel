@@ -1,0 +1,46 @@
+# This YAML file contains global variables used in the finance portfolio query.
+# The `bank_path` variable specifies the path to the bank data file.
+ticker_symbols:
+  #- PHYS
+  - 4GLD.DE
+  #- PSLV
+  - GDXJ
+  #- SBSW
+  #- EWS
+  #- ETFBM40TR.WA
+  #- ETFBS80TR.WA
+  # - AAPL
+  # - SMH
+  # - ASML
+  # - EVO
+  # - VEEV
+  # - QCOM
+  # - MSFT
+  # - V
+  # - MA
+  # - SNPS
+  # - EWJV
+  # - PLD
+  # - MOS
+  # - ADM
+  - YAR.OL
+  # - XLE
+  # #- GAZP.MICEX
+  # - URNM
+  # - URNJ
+  - CCJ
+  - UUUU
+  # - LYC.AX
+  # - COPX
+  # - FCX
+  - LUMI.ST
+  # - BTC-USD
+currency_sumbols:
+  - USDPLN=X
+  - USDEUR=X
+  - PLNUSD=X
+  - EURUSD=X
+  - CHFUSD=X
+  - GBPUSD=X
+  - SGDUSD=X
+

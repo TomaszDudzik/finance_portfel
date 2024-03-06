@@ -3,4 +3,5 @@
 data_source_path:
   bank_data_input_path: C:/Users/dudzi/Desktop/Portfel/raw_data
   bank_data_ouput_file: C:/Users/dudzi/Desktop/Portfel/data_source/bank_main_data.xlsx
-  xtb_path: C:/Users/dudzi/Desktop/Portfel/data_source/xtb
+  xtb_path: finance_portfel\input\data_source\xtb
+  #xtb_path: C:/Users/dudzi/Desktop/Portfel/data_source/xtb
